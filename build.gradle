@@ -1,0 +1,47 @@
+apply {
+    plugin 'java'
+    plugin 'maven'
+    plugin 'eclipse'
+    plugin 'application'
+}
+
+repositories {
+    //mavenCentral()
+    mavenRepo url: "http://192.175.204.100/nexus/content/groups/public/"
+}
+
+group = 'org.apache.jackrabbit'
+version = '1.0'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+[compileJava,compileTestJava].each { c->
+    c.options.encoding = 'UTF-8'
+    c.options.debug(debugLevel: 'source,lines,vars')
+}
+
+mainClassName = 'org.apache.jackrabbit.tools.copy.JcrCopyTool'
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+eclipse {
+    pathVariables 'GRADLE_USER_HOME': gradle.gradleUserHomeDir
+}
+
+dependencies {
+    compile 'javax.jcr:jcr:2.0'
+    compile 'org.apache.jackrabbit:jackrabbit-core:2.4.1'
+    compile 'org.slf4j:slf4j-log4j12:1.6.4'
+    compile 'mysql:mysql-connector-java:5.1.19'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.0'
+}
